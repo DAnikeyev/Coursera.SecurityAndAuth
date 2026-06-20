@@ -1,0 +1,24 @@
+@model IList<SafeVault.Models.UserMessage>
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<h1>Stored messages</h1>
+<p class="text-muted">
+    All content below was sanitized on input and is HTML-encoded by Razor on
+    output, so any &lt;script&gt; payload stored here is rendered as inert text.
+</p>
+
+<table class="table table-striped">
+    <thead><tr><th>Username</th><th>Message</th><th>When</th></tr></thead>
+    <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.Username</td>
+                <td>@m.Content</td>
+                <td>@m.CreatedAtUtc.ToLocalTime().ToString("g")</td>
+            </tr>
+        }
+    </tbody>
+</table>

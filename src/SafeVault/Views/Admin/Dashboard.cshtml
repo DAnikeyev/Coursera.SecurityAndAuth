@@ -1,0 +1,39 @@
+@model IList<SafeVault.Controllers.UserWithRolesViewModel>
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Admin Dashboard</h1>
+    <span class="badge bg-danger">Restricted &mdash; Admin role required</span>
+</div>
+
+<p class="text-muted">
+    This page is protected by <code>[Authorize(Roles = "Admin")]</code>. Any user
+    without the Admin role is redirected to the access-denied page.
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Display name</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>@u.DisplayName</td>
+                <td>
+                    @foreach (var r in u.Roles)
+                    {
+                        <span class="badge bg-secondary">@r</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

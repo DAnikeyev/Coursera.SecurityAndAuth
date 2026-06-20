@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="jumbotron p-4 mb-4 bg-light rounded">
+    <h1 class="display-4">SafeVault</h1>
+    <p class="lead">
+        A secure web application that manages sensitive data with defense against
+        SQL injection and cross-site scripting (XSS), plus authentication and
+        role-based access control.
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Security features</h3>
+        <ul>
+            <li><strong>Input validation</strong> &amp; sanitization at the trust boundary.</li>
+            <li><strong>Parameterized queries</strong> &mdash; no string-concatenated SQL.</li>
+            <li><strong>Bcrypt password hashing</strong> via ASP.NET Core Identity.</li>
+            <li><strong>Role-based access control</strong> &mdash; the Admin Dashboard is restricted to Admins.</li>
+            <li><strong>Output encoding</strong> &amp; security headers (CSP, nosniff) to defeat XSS.</li>
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h3>Demo accounts</h3>
+        <table class="table table-sm">
+            <thead><tr><th>Role</th><th>Email</th><th>Password</th></tr></thead>
+            <tbody>
+                <tr><td>Admin</td><td>admin@safevault.local</td><td>Admin#1234</td></tr>
+                <tr><td>User</td><td>user@safevault.local</td><td>User#1234</td></tr>
+            </tbody>
+        </table>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a class="btn btn-primary" asp-controller="Vault" asp-action="Submit">Submit a message</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="btn btn-danger" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
+            }
+        }
+        else
+        {
+            <a class="btn btn-primary" asp-controller="Account" asp-action="Login">Login</a>
+            <a class="btn btn-secondary" asp-controller="Account" asp-action="Register">Register</a>
+        }
+    </div>
+</div>

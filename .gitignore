@@ -427,3 +427,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# SafeVault Python
+*.pyc
+__pycache__/
+.pytest_cache/
+safevault.db
+venv/
+.venv/

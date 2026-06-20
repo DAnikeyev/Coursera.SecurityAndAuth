@@ -79,52 +79,6 @@ accounts are created automatically on first launch.
 | Admin | `admin@safevault.local` | `Admin#1234` |
 | User  | `user@safevault.local`  | `User#1234`  |
 
----
-
-## Activity mapping
-
-### Activity 1 — Input validation & SQL injection prevention
-- `Services/InputValidator.cs` validates usernames/emails against allow-lists and
-  a known SQLi/XSS signature list; sanitizes free-form text.
-- `Services/UserRepository.cs` performs **every** read/write through
-  parameterized `SqliteParameter` queries — user input is bound as data, never
-  interpolated into SQL.
-- Tested by `InputValidationTests.cs` and `SqlInjectionTests.cs`.
-
-### Activity 2 — Authentication & role-based authorization
-- ASP.NET Core Identity stores users and roles (`Admin`, `User`).
-- `Security/BcryptPasswordHasher.cs` replaces Identity's default PBKDF2 with
-  **bcrypt**, satisfying the requirement to hash passwords with a slow, salted
-  algorithm (bcrypt / Argon2 family).
-- `AccountController` implements registration, login (with lockout and
-  user-enumeration-safe error messages), and logout.
-- `AdminController` is decorated with `[Authorize(Roles = "Admin")]`, so the
-  **Admin Dashboard is reachable only by admins** — pure RBAC.
-- Tested by `AuthRbacTests.cs` (valid/invalid login, anonymous / user / admin
-  access to the dashboard, and a check that the stored password is a bcrypt hash).
-
-### Activity 3 — Debugging & resolving vulnerabilities
-- `Security/InsecureUserRepository.cs` deliberately reproduces the vulnerable
-  string-concatenation query so the fix is provable.
-- `SqlInjectionTests.cs` shows the insecure query **leaking every row** for an
-  `' OR '1'='1` payload, while the parameterized repository returns nothing.
-- XSS is fixed with **input sanitization + Razor output encoding** + a strict
-  `Content-Security-Policy` / `X-Content-Type-Options` header (see `Program.cs`).
-- Tested by `XssTests.cs`, which submits `<script>alert(...)</script>` and
-  asserts it is rendered as encoded text, never as executable markup.
-
----
-
-## Rubric checklist (30 pts)
-
-| Points | Requirement | Where |
-|---|---|---|
-| 5 | GitHub repository | this repo |
-| 5 | Secure code for input validation & SQL injection prevention | `InputValidator.cs`, `UserRepository.cs` |
-| 5 | Authentication & authorization incl. RBAC | `BcryptPasswordHasher.cs`, `AccountController`, `AdminController` (`[Authorize(Roles="Admin")]`) |
-| 5 | Debug & resolve SQL injection + XSS | `InsecureUserRepository.cs` vs `UserRepository.cs`; output encoding + CSP in `Program.cs` |
-| 5 | Generate & execute security tests | `tests/SafeVault.Tests/` — **31 passing tests** |
-| 5 | Vulnerability summary (below) | this README |
 
 ---
 

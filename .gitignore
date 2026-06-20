@@ -435,3 +435,6 @@ __pycache__/
 safevault.db
 venv/
 .venv/
+
+# IDE
+.idea/
